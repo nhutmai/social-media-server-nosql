@@ -1,41 +1,34 @@
 const express = require('express');
 const router = express.Router();
-const UserController = require('../controllers/user.controller');
-
-/**
- * @swagger
- * tags:
- *   name: Users
- *   description: API to manage users
- */
+const UserController = require('../../controllers/user.controller');
 
 /**
  * @swagger
  * /users:
  *   get:
- *     summary: Lấy danh sách người dùng
- *     description: Trả về danh sách tất cả người dùng với bộ lọc
+ *     summary: Retrieve a list of users
+ *     description: Get all users with optional filtering
  *     parameters:
  *       - in: query
  *         name: name
  *         schema:
  *           type: string
- *         description: Tìm kiếm người dùng theo tên
+ *         description: Search for users by name
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
  *           default: 10
- *         description: Số lượng người dùng trên mỗi trang (mặc định là 10)
+ *         description: Number of users per page (default is 10)
  *       - in: query
  *         name: page
  *         schema:
  *           type: integer
  *           default: 1
- *         description: Trang hiện tại (mặc định là 1)
+ *         description: Current page (default is 1)
  *     responses:
  *       200:
- *         description: Danh sách người dùng
+ *         description: List of users
  *         content:
  *           application/json:
  *             schema:
@@ -63,17 +56,17 @@ router.get('/', UserController.getAllUser)
  * @swagger
  * /users/{id}:
  *   get:
- *     summary: Lấy thông tin một người dùng theo ID
+ *     summary: Retrieve user information by ID
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: ID của người dùng cần lấy
+ *         description: ID of the user to retrieve
  *     responses:
  *       200:
- *         description: Thông tin chi tiết của người dùng
+ *         description: Detailed information of the user
  *         content:
  *           application/json:
  *             schema:
@@ -89,7 +82,7 @@ router.get('/', UserController.getAllUser)
  *                     user_name:
  *                       type: string
  *       404:
- *         description: Không tìm thấy người dùng
+ *         description: User not found
  */
 router.get('/:id', UserController.getUserById)
 
@@ -97,8 +90,8 @@ router.get('/:id', UserController.getUserById)
  * @swagger
  * /users:
  *   post:
- *     summary: Tạo mới người dùng
- *     description: API để tạo mới một người dùng
+ *     summary: Create a new user
+ *     description: API to create a new user
  *     requestBody:
  *       required: true
  *       content:
@@ -116,13 +109,13 @@ router.get('/:id', UserController.getUserById)
  *             properties:
  *               user_name:
  *                 type: string
- *                 example: "Nguyễn Văn A"
+ *                 example: "John Doe"
  *               user_last_name:
  *                 type: string
- *                 example: "Nguyễn"
+ *                 example: "Doe"
  *               email:
  *                 type: string
- *                 example: "nguyenvana@example.com"
+ *                 example: "johndoe@example.com"
  *               user_contact:
  *                 type: object
  *                 properties:
@@ -131,10 +124,10 @@ router.get('/:id', UserController.getUserById)
  *                     example: "0987654321"
  *                   user_address:
  *                     type: string
- *                     example: "123 Đường ABC, TP.HCM"
+ *                     example: "123 ABC Street, HCM City"
  *                   user_facebook:
  *                     type: string
- *                     example: "https://facebook.com/nguyenvana"
+ *                     example: "https://facebook.com/johndoe"
  *               user_gender:
  *                 type: number
  *                 enum: [0, 1]
@@ -144,10 +137,10 @@ router.get('/:id', UserController.getUserById)
  *                 example: "123456789"
  *               user_major:
  *                 type: string
- *                 example: "Công nghệ thông tin"
+ *                 example: "Information Technology"
  *     responses:
  *       201:
- *         description: Tạo người dùng thành công
+ *         description: User created successfully
  *         content:
  *           application/json:
  *             schema:
@@ -166,15 +159,15 @@ router.post('/', UserController.createUser);
  * @swagger
  * /users/{id}:
  *   put:
- *     summary: Cập nhật thông tin người dùng
- *     description: API để cập nhật thông tin của người dùng theo ID
+ *     summary: Update user information
+ *     description: API to update user information by ID
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: ID của người dùng cần cập nhật
+ *         description: ID of the user to update
  *     requestBody:
  *       required: true
  *       content:
@@ -184,13 +177,13 @@ router.post('/', UserController.createUser);
  *             properties:
  *               user_name:
  *                 type: string
- *                 example: "Nguyễn Văn B"
+ *                 example: "John Smith"
  *               user_last_name:
  *                 type: string
- *                 example: "Bùi"
+ *                 example: "Smith"
  *               email:
  *                 type: string
- *                 example: "nguyenvanb@example.com"
+ *                 example: "johnsmith@example.com"
  *               user_contact:
  *                 type: object
  *                 properties:
@@ -199,13 +192,13 @@ router.post('/', UserController.createUser);
  *                     example: "0981234567"
  *                   user_address:
  *                     type: string
- *                     example: "456 Đường XYZ, Hà Nội"
+ *                     example: "456 XYZ Street, Hanoi"
  *                   user_facebook:
  *                     type: string
- *                     example: "https://facebook.com/nguyenvanb"
+ *                     example: "https://facebook.com/johnsmith"
  *     responses:
  *       200:
- *         description: Cập nhật thành công
+ *         description: Update successful
  *         content:
  *           application/json:
  *             schema:
@@ -219,7 +212,7 @@ router.post('/', UserController.createUser);
  *                 user:
  *                   type: object
  *       404:
- *         description: Không tìm thấy người dùng
+ *         description: User not found
  */
 router.put('/:id', UserController.updateUser);
 
@@ -227,18 +220,18 @@ router.put('/:id', UserController.updateUser);
  * @swagger
  * /users/{id}:
  *   delete:
- *     summary: Xóa người dùng
- *     description: API để xóa người dùng theo ID
+ *     summary: Delete a user
+ *     description: API to delete a user by ID
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: ID của người dùng cần xóa
+ *         description: ID of the user to delete
  *     responses:
  *       200:
- *         description: Xóa thành công
+ *         description: Deletion successful
  *         content:
  *           application/json:
  *             schema:
@@ -250,7 +243,7 @@ router.put('/:id', UserController.updateUser);
  *                   type: string
  *                   example: "User deleted successfully"
  *       404:
- *         description: Không tìm thấy người dùng
+ *         description: User not found
  */
 router.delete('/:id', UserController.deleteUser);
 

@@ -1,13 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const postController = require('../controllers/post.controller');
-
-/**
- * @swagger
- * tags:
- *   name: Posts
- *   description: API to manage posts
- */
+const postController = require('../../controllers/post.controller');
 
 /**
  * @swagger
