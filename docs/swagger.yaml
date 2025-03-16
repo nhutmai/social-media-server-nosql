@@ -1,0 +1,553 @@
+openapi: 3.0.3
+info:
+  title: API quản lý người dùng
+  description: 123
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api/v1
+tags:
+  - name: Posts
+    description: Post management APIs
+  - name: users
+    description: User management APIs
+paths:
+  /posts:
+    get:
+      tags:
+        - Posts
+      summary: Lấy danh sách bài viết có thể lọc theo tiêu đề và nội dung
+      description: API trả về danh sách bài viết dựa trên tiêu chí lọc và phân trang
+      parameters:
+        - name: title
+          in: query
+          description: Lọc bài viết theo tiêu đề (không phân biệt hoa thường)
+          required: false
+          schema:
+            type: string
+        - name: content
+          in: query
+          description: Lọc bài viết theo nội dung (không phân biệt hoa thường)
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Số bài viết trên mỗi trang
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: page
+          in: query
+          description: Trang hiện tại
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Lấy danh sách bài viết thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  post:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: "65a8b9f14c8a1b0023a1f5d9"
+                        post_title:
+                          type: string
+                          example: "Bài viết mẫu"
+                        post_content:
+                          type: string
+                          example: "Nội dung bài viết mẫu"
+                        post_author:
+                          type: object
+                          properties:
+                            _id:
+                              type: string
+                              example: "65a8b9f14c8a1b0023a1f5e0"
+                            name:
+                              type: string
+                              example: "Nguyễn Văn A"
+                  limit:
+                    type: integer
+                    example: 10
+                  currentPage:
+                    type: integer
+                    example: 1
+                  totalPages:
+                    type: integer
+                    example: 5
+                  totalPosts:
+                    type: integer
+                    example: 50
+        "500":
+          description: Lỗi server khi lấy bài viết
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Internal Server Error"
+    post:
+      tags:
+        - Posts
+      summary: Tạo bài viết mới
+      description: API để tạo bài viết mới và liên kết với tác giả
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - post_title
+                - post_content
+                - post_author
+              properties:
+                post_title:
+                  type: string
+                  example: "Bài viết mới"
+                post_content:
+                  type: string
+                  example: "Nội dung của bài viết mới"
+                post_author:
+                  type: string
+                  description: ID của tác giả bài viết
+                  example: "65a8b9f14c8a1b0023a1f5e0"
+      responses:
+        "201":
+          description: Tạo bài viết thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  status:
+                    type: integer
+                    example: 201
+                  newPost:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: "65a8b9f14c8a1b0023a1f5d9"
+                      post_title:
+                        type: string
+                        example: "Bài viết mới"
+                      post_content:
+                        type: string
+                        example: "Nội dung của bài viết mới"
+                      post_author:
+                        type: string
+                        example: "65a8b9f14c8a1b0023a1f5e0"
+        "500":
+          description: Lỗi server khi tạo bài viết
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Internal Server Error"
+  /posts/{id}:
+    put:
+      tags:
+        - Posts
+      summary: Cập nhật bài viết
+      description: Cập nhật thông tin bài viết theo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID của bài viết cần cập nhật
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                post_title:
+                  type: string
+                  example: "Tiêu đề mới"
+                post_content:
+                  type: string
+                  example: "Nội dung mới của bài viết"
+      responses:
+        "200":
+          description: Cập nhật bài viết thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "User updated successfully"
+                  post:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: "65a8b9f14c8a1b0023a1f5d9"
+                      post_title:
+                        type: string
+                        example: "Tiêu đề mới"
+                      post_content:
+                        type: string
+                        example: "Nội dung mới của bài viết"
+        "404":
+          description: Bài viết không tồn tại
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "post not found"
+        "500":
+          description: Lỗi server khi cập nhật bài viết
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Internal Server Error"
+
+    delete:
+      tags:
+        - Posts
+      summary: Xóa bài viết
+      description: Xóa bài viết theo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID của bài viết cần xóa
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Xóa bài viết thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Post deleted successfully"
+        "404":
+          description: Bài viết không tồn tại
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "post not found"
+        "500":
+          description: Lỗi server khi xóa bài viết
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Internal Server Error"
+
+  /users:
+    get:
+      tags:
+        - users
+      summary: Lấy danh sách người dùng với bộ lọc
+      parameters:
+        - name: name
+          in: query
+          description: Lọc theo tên người dùng
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Số lượng user tối đa trong một trang (tối đa 100)
+          schema:
+            type: integer
+            default: 10
+        - name: page
+          in: query
+          description: Trang hiện tại (bắt đầu từ 1)
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Danh sách người dùng
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: "65a8b9f14c8a1b0023a1f5e0"
+                        user_name:
+                          type: string
+                          example: "Nguyễn Văn A"
+                  limit:
+                    type: integer
+                    example: 10
+                  currentPage:
+                    type: integer
+                    example: 1
+                  totalPages:
+                    type: integer
+                    example: 5
+                  totalUsers:
+                    type: integer
+                    example: 50
+
+    post:
+      tags:
+        - users
+      summary: Tạo người dùng mới
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_name:
+                  type: string
+                  example: "Nguyễn Văn A"
+      responses:
+        "201":
+          description: Tạo người dùng thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  newUser:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: "65a8b9f14c8a1b0023a1f5e0"
+                      user_name:
+                        type: string
+                        example: "Nguyễn Văn A"
+        "400":
+          description: Lỗi khi tạo người dùng
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Tên người dùng không được để trống"
+
+  /users/{id}:
+    get:
+      tags:
+        - users
+      summary: Lấy thông tin chi tiết của một người dùng
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID của người dùng
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Thông tin người dùng
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  user:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: "65a8b9f14c8a1b0023a1f5e0"
+                      user_name:
+                        type: string
+                        example: "Nguyễn Văn A"
+        "404":
+          description: Không tìm thấy người dùng
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "user not found"
+
+    put:
+      tags:
+        - users
+      summary: Cập nhật thông tin người dùng
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID của người dùng
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_name:
+                  type: string
+                  example: "Nguyễn Văn B"
+      responses:
+        "200":
+          description: Cập nhật thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "User updated successfully"
+                  user:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: "65a8b9f14c8a1b0023a1f5e0"
+                      user_name:
+                        type: string
+                        example: "Nguyễn Văn B"
+        "404":
+          description: Không tìm thấy người dùng
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "User not found"
+
+    delete:
+      tags:
+        - users
+      summary: Xóa người dùng
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID của người dùng
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Xóa thành công
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "User deleted successfully"
+        "404":
+          description: Không tìm thấy người dùng
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "User not found"

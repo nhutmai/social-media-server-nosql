@@ -4,9 +4,18 @@ const UserController = require('../../controllers/user.controller');
 
 /**
  * @swagger
+ * tags:
+ *   - name: Users
+ *     description: User management APIs
+ */
+
+
+/**
+ * @swagger
  * /users:
  *   get:
  *     summary: Retrieve a list of users
+ *     tags: [Users]
  *     description: Get all users with optional filtering
  *     parameters:
  *       - in: query
@@ -50,13 +59,14 @@ const UserController = require('../../controllers/user.controller');
  *                 totalPages:
  *                   type: integer
  */
-router.get('/', UserController.getAllUser)
+router.get('/', UserController.getAllUser);
 
 /**
  * @swagger
  * /users/{id}:
  *   get:
  *     summary: Retrieve user information by ID
+ *     tags: [Users]
  *     parameters:
  *       - in: path
  *         name: id
@@ -84,13 +94,14 @@ router.get('/', UserController.getAllUser)
  *       404:
  *         description: User not found
  */
-router.get('/:id', UserController.getUserById)
+router.get('/:id', UserController.getUserById);
 
 /**
  * @swagger
  * /users:
  *   post:
  *     summary: Create a new user
+ *     tags: [Users]
  *     description: API to create a new user
  *     requestBody:
  *       required: true
@@ -160,6 +171,7 @@ router.post('/', UserController.createUser);
  * /users/{id}:
  *   put:
  *     summary: Update user information
+ *     tags: [Users]
  *     description: API to update user information by ID
  *     parameters:
  *       - in: path
@@ -221,6 +233,7 @@ router.put('/:id', UserController.updateUser);
  * /users/{id}:
  *   delete:
  *     summary: Delete a user
+ *     tags: [Users]
  *     description: API to delete a user by ID
  *     parameters:
  *       - in: path
